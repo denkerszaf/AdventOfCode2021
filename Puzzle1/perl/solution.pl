@@ -27,9 +27,19 @@ sub getIncreasedDepths(@){
 	return $result;
 }
 
+sub getIncreasedWindows(@) {
+	my @readings = @_;
+	my @windows = ();
+	for (my $i = 2; $i < scalar(@readings); $i++) {
+		push @windows, $readings[$i] +$readings[$i-1] + $readings[$i-2]; 
+	}
+	return getIncreasedDepths(@windows);
+}
+
 if (!caller(0)) {
 	my @readings = getReadings();
-	my $result = getIncreasedDepths(@readings);
-	say $result;
+	my $depths = getIncreasedDepths(@readings);
+	my $windows = getIncreasedWindows(@readings);
+	say "$depths increased depths, $windows increased windows";
 }
 1;
