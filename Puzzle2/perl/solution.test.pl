@@ -17,4 +17,5 @@ forward 2
 INSTRUCTIONS
 
 
-ok navigate($example_instructions) == (15, 10); 
+ok navigate($example_instructions) == (15, 10);
+ok navigateWithAim($example_instructions) == (15, 60); 

@@ -38,10 +38,41 @@ sub navigate($) {
 	return ($forward_pos, $depth);
 }
 
+sub navigateWithAim {
+	my ($instructions) = @_;
+	
+	my ($forward_pos, $depth, $aim ) = (0,0, 0);
+	foreach my $instruction  ( split /\n/, $instructions ) {
+		my ($instruction_type, $argument) =   $instruction =~ /(\w+) (\d+)/ ;
+		given ($instruction_type) {
+			when ($_ eq 'forward') {
+				$forward_pos += $argument;
+				$depth += $aim * $argument;
+			}
+			when ($_ eq 'up') {
+				$aim -= $argument;
+			}
+			when ($_ eq 'down' ) {
+				$aim += $argument;
+			}
+			default {
+				die "no such instruction $instruction_type";
+			}
+		} 
+	}
+	return ($forward_pos, $depth);
+}
+	
+
 if (!caller(0)) {
 	my ($forward, $depth) = navigate(getInput());
 	my $solution = $forward *  $depth;
 	say "Forward Position is $forward, depth is $depth. Solution result should be $solution";
+	
+	($forward, $depth) = navigateWithAim(getInput());
+	$solution = $forward *  $depth;
+	say "With aim calculated, forward Position is $forward, depth is $depth. Solution result should be $solution";
+	
 }
 
 1;
