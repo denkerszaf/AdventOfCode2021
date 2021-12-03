@@ -2,7 +2,7 @@
 
 use strict; 
 use warnings; 
-use Test::Simple tests => 2;
+use Test::Simple tests => 4;
 use 5.32.0;
 
 require "solution.pl";
@@ -24,3 +24,5 @@ REPORT
 
 ok extractGamma(analyzeReport($diagnostic_report)) == 22;
 ok extractEpsilon(analyzeReport($diagnostic_report)) == 9;
+ok extractOxygenRating($diagnostic_report) == 23;
+ok extractCO2ScrubberRating($diagnostic_report) == 10;

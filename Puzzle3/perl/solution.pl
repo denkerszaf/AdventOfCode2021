@@ -8,13 +8,15 @@ use List::Util qw( max );
 sub analyzeReport {	
 	my ($report) = @_;
 	
-	my ($current_column, $rowcount, $column_count) = (0,0);
+	my ($current_column, $column_count) = (0,0);
+	
+	my $rowcount = scalar split /\n/, $report;  
 	
 	my %bitcount = ();
 	
 	foreach my $bit (split '',$report) {
 		if ($bit eq "\n") {
-			($current_column, $rowcount, $column_count ) = (0, $rowcount +1, $current_column -1 );
+			($current_column, $column_count ) = (0, $current_column -1 );
 		} else {
 			$bitcount{$current_column++} +=$bit
 		}	
@@ -45,6 +47,18 @@ sub extractGamma {
 	return $gamma;
 }
 
+sub binaryStringToInt {
+	my ($bitstring) = @_;
+	 
+	my $result = 0; 
+	
+	foreach my $bit ( split '', $bitstring) {
+		$result = 2 * $result + $bit;
+	}
+	
+	return $result;
+}
+
 sub extractEpsilon {
 	my (%report_analysis) = @_;
 
@@ -52,7 +66,32 @@ sub extractEpsilon {
 	my $column_count = max (keys  %report_analysis);
 		
 	return  (2**($column_count+1)-1) ^ $gamma;
-	 	
+ 	
+}
+
+
+sub extractOxygenRating {
+	my ($report) = @_;
+	
+	my $column = 0;
+	while ($report =~ /\n/) {
+		my %report_analysis = analyzeReport($report);
+		my $current_column = $column++; 
+		$report = join "\n", grep { $report_analysis{$current_column} == (split '', $_)[$current_column]} split /\n/, $report;
+	}
+	return binaryStringToInt($report);
+}
+
+sub extractCO2ScrubberRating {
+	my ($report) = @_;
+	
+	my $column = 0;
+	while ($report =~ /\n/) {
+		my %report_analysis = analyzeReport($report);
+		my $current_column = $column++; 
+		$report = join "\n", grep { $report_analysis{$current_column} != (split '', $_)[$current_column]} split /\n/, $report;
+	}
+	return binaryStringToInt($report);
 }
 
 
@@ -79,9 +118,12 @@ sub getInput() {
 
 
 if (!caller(0)) {
-	my ($gamma, $epsilon) = getSolution(getInput());
+	my $input = getInput();
+	my ($gamma, $epsilon) = getSolution($input);
+	my ($oxygen, $scrubber) = ( extractOxygenRating($input), extractCO2ScrubberRating($input));
 	
 	say "Gamma value $gamma, epsilon value $epsilon, puzzle solution is " . $gamma * $epsilon;
+	say "Oxygen value is $oxygen, c02 value is $scrubber, puzzle solution is " . $oxygen * $scrubber;
 		
 }
 
