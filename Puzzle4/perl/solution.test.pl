@@ -36,4 +36,8 @@ is(scalar @{$test->{'boards'}}, 3);
 is_deeply((winningBoard($test))[0], [2]);
 is(score($test->{'boards'}[2], [ 7,4,9,5,11,17,23,2,0,14,21,24 ]), 4512);
 
+$test = parseInput($input);
+
+is_deeply((loserBoard($test))[0], [1]);
+
 done_testing();

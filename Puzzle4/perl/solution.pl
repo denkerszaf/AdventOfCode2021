@@ -2,7 +2,7 @@
 
 use strict; 
 use warnings;
-use List::MoreUtils qw(any uniq duplicates);
+use List::MoreUtils qw(any uniq duplicates none);
 use List::Util qw /sum/;
 use 5.32.0;
 
@@ -75,6 +75,29 @@ sub winningBoard {
 	return (\@winners, \@drawn);
 }
 
+sub loserBoard {
+	my ($input) = @_;
+	
+	my @drawn = ();
+	my @winners = ();
+	
+	my @alreadyWon = ();
+	
+	my $boardcount = scalar @{$input->{'boards'}};
+
+	do {
+		@alreadyWon = @winners;
+		push @drawn, (shift @{$input->{'draws'}});
+		@winners = getWinners(\@drawn, $input->{'boards'});
+		
+	} while ((scalar @winners) < (scalar @{$input->{'boards'}}));
+	
+	my @soreLoser = grep { my $value = $_; none  {$_ == $value } @alreadyWon } @winners;
+	
+	return (\@soreLoser, \@drawn);
+	
+}
+
 sub score {
 	my ($board, $drawn) = @_;
 	
@@ -103,9 +126,16 @@ if (!caller(0)) {
 	my ($winners, $drawn) = winningBoard($input);
 	my $winner = $winners->[0];
 	
+
 	my $score = score($input->{'boards'}->[$winner], $drawn);
+	
+	my ($loserList, $loserdrawn) = loserBoard(parseInput(getInput()));
+	my $soreloser = $loserList->[0];
+	my $loserScore = score($input->{'boards'}->[$soreloser], $loserdrawn);
+	
 	 
 	say "winner is board $winner with a score of $score";
+	say "loser is board $soreloser with a score of $loserScore";
 	
 }
 
