@@ -92,7 +92,6 @@ sub getInput() {
 if (!caller(0)) {	
 	
 	my $input = getInput();
-	my %input = histogram($input);
 	my $gen80 = fishCount(generations($input, 80));
 	say "After 80 generations, there will be $gen80 fishes";
 	
