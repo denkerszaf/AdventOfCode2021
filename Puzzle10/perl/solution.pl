@@ -17,13 +17,15 @@ my %illegal_character_score = (
 
 
 sub legal {
-	my ($input) = @_;
+	my ($input ) = @_;
+	
+
 	
 	my @inputs = split '', $input;
 	
-	my @stack =();
+	my @stack = ();
 	my $valid_until_here = 1;
-	my $additional_info = undef; 
+	my $additional_info = \@stack; 
 	do {
 		my $char = shift @inputs;
 		if ( $char =~ /[({\[<]/ ) {
@@ -57,6 +59,39 @@ sub total_illegal_character_score {
 	
 }
 
+sub autocomplete {
+	my ($line) = @_;
+		
+	my ($stack, $result ) = legal($line);
+	
+	return map { $open_to_close{$_} } reverse(@$stack);
+}
+
+my %autocomplete_points = (
+')' => 1,
+']' => 2,
+'}' => 3, 
+'>' => 4
+);
+
+sub autocomplete_points {
+	my (@closing_paranthesis ) = @_;
+	
+	return
+		reduce{$a * 5 + $b}
+		map {$autocomplete_points{$_}} @closing_paranthesis;
+}
+
+sub total_autocomplete_points {
+	my (@inputs) = @_;
+	my @scores = sort { $a <=> $b} 	
+		map { autocomplete_points(autocomplete($_)) } 
+		@inputs;
+	my $winning_index = (scalar @scores - 1)  / 2;
+	
+	return $scores[$winning_index]; 
+}
+
 sub getInput() {
 	open (my $fh, '<', '../input') or die 'could not read input';
 	$/ = undef;
@@ -68,8 +103,12 @@ sub getInput() {
 if (!caller(0)) {	
 	my @input = getInput();
 	my $illegal_score = total_illegal_character_score(@input);
+	my $autocomplete_score = total_autocomplete_points(grep {legal($_)} @input);
 	
 	say "Illegal score sum: $illegal_score";
+	say "Autocomplete score: $autocomplete_score";
+	
+	
 }
 1;
 

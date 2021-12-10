@@ -38,4 +38,20 @@ foreach my $incomplete ('(((({<>}<{<{<>}{[]{[]{}') {
 }
 is(total_illegal_character_score(@test_input), 26397);
 
+# Part 2
+#while (my ($input, $completion) = each (
+#    '[({(<(())[]>[[{[]{<()<>>' => split '', '}}]])})]',
+#    '[(()[<>])]({[<{<<[]>>(' => split '', ')}>]})',
+#    '(((({<>}<{<{<>}{[]{[]{}' => split '', '}}>}>))))',
+#    '{<[[]]>}<{[{[{[]{()[[[]' => split '', ']]}}]}]}>',
+#    '<{([{{}}[<[[[<>{}]]]>[]]' => split '', '])}>'
+#		)
+#	) {
+	is_deeply(
+	[ autocomplete('[({(<(())[]>[[{[]{<()<>>') ], [split '', '}}]])})]'] );	
+#}
+
+is(total_autocomplete_points(grep {legal($_)} @test_input), 288957);
+
+
 done_testing;
