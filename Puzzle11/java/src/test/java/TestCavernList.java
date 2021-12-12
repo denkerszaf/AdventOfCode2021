@@ -45,5 +45,21 @@ public class TestCavernList {
 				+ "5283751526");
 		assertEquals(1656, cavern.nextGeneration(100));
 	}
+	
+	@Test
+	public void firstSimultaneousFlash() {
+		Cavern cavern = new Cavern("5483143223\n"
+				+ "2745854711\n"
+				+ "5264556173\n"
+				+ "6141336146\n"
+				+ "6357385478\n"
+				+ "4167524645\n"
+				+ "2176841721\n"
+				+ "6882881134\n"
+				+ "4846848554\n"
+				+ "5283751526");
+		assertEquals(195, cavern.getNextSimultaneousFlash());
+	}
+
 
 }

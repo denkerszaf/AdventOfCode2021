@@ -90,6 +90,19 @@ public class Cavern {
 	private void octopiOperation(Consumer<? super Octopus> consumer) {
 		octupi.stream().flatMap(o -> o.stream()).forEach(consumer);
 	}
+
+	public int getNextSimultaneousFlash() {
+		int generationCounter = 0; 
+		int flashes = 0;
+		int octopiCount = octupi.stream().map(o -> o.size()).reduce(0, (a,b) -> a+b);
+		while (flashes < octopiCount) {
+			flashes = nextGeneration();
+			generationCounter++;
+		}
+		
+		
+		return generationCounter; 
+	}
 	
 
 }
