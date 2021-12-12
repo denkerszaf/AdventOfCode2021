@@ -44,7 +44,7 @@ public class Cave {
 		exits.add(src);
 	}
 	
-	public boolean isEnterableMultipleTimes() {
+	public boolean isBig() {
 		return name.matches("^[A-Z]+$");
 	}
 

@@ -13,9 +13,18 @@ public class Maze {
 	
 	private Map<String, Cave> caves = new HashMap<>();
 	
+	private final Enterable enterable; 
+	
 	public Maze(String input) {
+		this.enterable = new SimpleEnterable();
 		Stream.of(input.split("\n")).forEach((line) -> this.addConnection(line));
 	}
+	
+	public Maze(String input, Enterable enterable) {
+		this.enterable = enterable;
+		Stream.of(input.split("\n")).forEach((line) -> this.addConnection(line));
+	}
+
 
 	private void addConnection(String string1) {
 		String[] caves = string1.split("-");
@@ -48,7 +57,7 @@ public class Maze {
 			Set<Cave> possibleExits = node.getExits();
 			Set<List<Cave>> possibleNavigations = new HashSet<>();
 			for (Cave next: possibleExits ) {
-				if (next.isEnterableMultipleTimes() || !caves.contains(next) ) {
+				if (enterable.mayBeEntered(caves, next) ) {
 					List<Cave> newCaveList = new ArrayList<Cave>(caves);
 					newCaveList.add(next);
 					possibleNavigations.addAll(dfs(next, goal, newCaveList));
@@ -57,5 +66,4 @@ public class Maze {
 			return possibleNavigations;
 		}
 	}
-
 }
