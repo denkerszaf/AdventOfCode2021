@@ -47,7 +47,13 @@ is_deeply(parse_input($input), {'template' => 'NNCB', 'rules' => {
 'CN' => 'C'
 }});
 
-is(polymerize(parse_input($input))->{'template'}, 'NCNBCHB' );
+my $parsed = parse_input($input);
 
+is(polymerize(parse_input($input))->{'template'}, 'NCNBCHB' );
+is(polymerize(parse_input($input),2)->{'template'}, 'NBCCNBBBCBHCB' );
+
+is_deeply (polymerize_only_histogram($parsed, 1), histogram(split '', 'NCNBCHB') );
+is(solve(polymerize_only_histogram($parsed, 10)), 1588 );
+is(solve(polymerize_only_histogram($parsed, 40)), 2188189693529);
 
 done_testing;
